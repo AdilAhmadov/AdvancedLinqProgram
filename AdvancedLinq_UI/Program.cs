@@ -1,9 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using BusinessLayer;
-using EntityModels;
 using EntityModels.Concrete;
 using EntityModels.Data;
-using System.Data;
 
 var empList = SeedData.Employees();
 var depList = SeedData.Departments();
@@ -71,24 +68,41 @@ empList.Add(new Employee() { Id = 10, Firstname = "Adil", DepartmentId = 1, Last
 //    Console.WriteLine();
 //}
 Console.WriteLine();
+//Join Operation Example using Methos Syntax
+//var resultJoin = depList.Join(empList,
+//    department => department.Id,
+//    employee => employee.DepartmentId, (department, employee) => new 
+//    {
+//        //DepartmentID = department.Id,
+//        //EmployeeID = employee.Id,
+//        DepartmentSName = department.ShortName,
+//        DepartmentLName = department.LongName,
 
-var resultJoin = depList.Join(empList,
-    department => department.Id,
-    employee => employee.Id, (department, employee) => new 
-    {
-        DepartmentID = department.Id,
-        EmployeeID = employee.Id,
-        DepartmentSName = department.ShortName,
-        DepartmentLName = department.LongName,
+//        EmployeeFullName = employee.Firstname + " " + employee.Lastname,
+//        EmployeeSalary= employee.AnnualSalary,
+//        Manager = employee.IsManager
+//    });
+//foreach (var item in resultJoin)
+//{
+//    Console.WriteLine($"DepartmentName: {item.DepartmentLName,-20}" +
+//        $"FullName: {item.EmployeeFullName, -20} Salary: {item.EmployeeSalary,-7} Manager: {item.Manager,-5}");
+//}
 
-        EmployeeFullName = employee.Firstname + " " + employee.Lastname,
-        EmployeeSalary= employee.AnnualSalary,
-        Manager = employee.IsManager
-    });
+//Join Operation Example using Query Syntax
+var resultJoin = from dep in depList
+                 join emp in empList on dep.Id equals emp.DepartmentId
+                 select new
+                 {
+                     DepartmentSName = dep.ShortName,
+                     DepartmentLName = dep.LongName,
+                     EmployeeFullName = emp.Firstname + " " + emp.Lastname,
+                     EmployeeSalary = emp.AnnualSalary,
+                     Manager = emp.IsManager
+                 };
 foreach (var item in resultJoin)
 {
-    Console.WriteLine($"DepartmentID: {item.DepartmentID,-3} EmployeeID: {item.EmployeeID,-3} DepartmentSName: {item.DepartmentSName,-3}" +
-        $"DepartmentLName: {item.DepartmentLName,-20} FullName: {item.EmployeeFullName, -20} Salary: {item.EmployeeSalary,-7} Manager: {item.Manager,-5}");
+    Console.WriteLine($"DepartmentName: {item.DepartmentLName,-20}" +
+        $"FullName: {item.EmployeeFullName,-20} Salary: {item.EmployeeSalary,-7} Manager: {item.Manager,-5}");
 }
 //foreach (var item in result3)
 //{
