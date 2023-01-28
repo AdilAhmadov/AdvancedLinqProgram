@@ -13,5 +13,13 @@ namespace BusinessLayer
                     yield return emp;
             }
         }
+        public static IEnumerable<Department> GetAllDepartments(this IEnumerable<Department> department)
+        {
+            foreach (Department dep in department)
+            {
+                Console.WriteLine($"Accessing Department: {dep.ShortName + " " + dep.LongName}");
+                yield return dep;
+            }
+        }
     }
 }

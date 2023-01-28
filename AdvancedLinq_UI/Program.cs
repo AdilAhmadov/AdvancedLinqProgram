@@ -3,6 +3,7 @@ using BusinessLayer;
 using EntityModels;
 using EntityModels.Concrete;
 using EntityModels.Data;
+using System.Data;
 
 var empList = SeedData.Employees();
 var depList = SeedData.Departments();
@@ -53,18 +54,42 @@ empList.Add(new Employee() { Id = 10, Firstname = "Adil", DepartmentId = 1, Last
 //    Console.WriteLine($"Full Name: {item.FullName,-10} IsManager: {manager,-10} Salary: {item.AnnualSalary,-10}");
 //}
 
-var result4 = from emp in empList.GetHighSalariedEmployees(50000)
-              select new
-              {
-                  FullName = emp.Firstname + " " + emp.Lastname,
-                  Salary = emp.AnnualSalary
-              };
-foreach (var item in result4)
-{
-    Console.WriteLine(item.Salary);
-}
+//var result4 = from emp in empList.GetHighSalariedEmployees(5000)
+//              select new
+//              {
+//                  FullName = emp.Firstname + " " + emp.Lastname,
+//                  Salary = emp.AnnualSalary
+//              };
+
+//foreach (var item in result4)
+//{
+//    Console.WriteLine(item.Salary);
+//}
+//var dep = depList.GetAllDepartments();
+//foreach (var item in dep)
+//{
+//    Console.WriteLine();
+//}
 Console.WriteLine();
 
+var resultJoin = depList.Join(empList,
+    department => department.Id,
+    employee => employee.Id, (department, employee) => new 
+    {
+        DepartmentID = department.Id,
+        EmployeeID = employee.Id,
+        DepartmentSName = department.ShortName,
+        DepartmentLName = department.LongName,
+
+        EmployeeFullName = employee.Firstname + " " + employee.Lastname,
+        EmployeeSalary= employee.AnnualSalary,
+        Manager = employee.IsManager
+    });
+foreach (var item in resultJoin)
+{
+    Console.WriteLine($"DepartmentID: {item.DepartmentID,-3} EmployeeID: {item.EmployeeID,-3} DepartmentSName: {item.DepartmentSName,-3}" +
+        $"DepartmentLName: {item.DepartmentLName,-20} FullName: {item.EmployeeFullName, -20} Salary: {item.EmployeeSalary,-7} Manager: {item.Manager,-5}");
+}
 //foreach (var item in result3)
 //{
 //    Console.WriteLine($"Full Name: {item.FullName,-20} IsManager: {item.Manager,-10} Salary: {item.Salary,-10}");
